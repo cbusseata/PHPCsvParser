@@ -175,7 +175,7 @@ class CsvIterator implements \Iterator
         $cell = $this->trimRightEnclosure($value, $option['enclosure']);
         $cell = $this->unescapeEnclosure($cell, $option['enclosure']);
 
-        $this->joinCell($this->revert . $cell);
+        $this->joinCell($cell);
         $this->continue = false;
         $this->col++;
     }
@@ -192,7 +192,7 @@ class CsvIterator implements \Iterator
     {
         if($this->continue) {
             $cell = $this->unescapeEnclosure($value, $option['enclosure']);
-            $this->joinCell($this->revert . $cell);
+            $this->joinCell($cell);
         } else {
             $cell = rtrim($value);
             $cell = $this->unescapeEnclosure($cell, $option['enclosure']);
@@ -218,7 +218,11 @@ class CsvIterator implements \Iterator
      */
     private function joinCell($cell)
     {
-        $this->result[$this->getIndexForColumn($this->col)] .= $cell;
+        if (!empty($this->result[$this->getIndexForColumn($this->col)])) {
+            $this->result[ $this->getIndexForColumn($this->col) ] .= $this->revert . $cell;
+        } else {
+            $this->result[ $this->getIndexForColumn($this->col) ] = $cell;
+        }
     }
 
     /**
